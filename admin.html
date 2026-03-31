@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ExamPortal — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1a1a24;
+    --border: #1e1e2e;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --success: #4ade80;
+    --error: #f87171;
+    --warn: #fbbf24;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-badge {
+    background: linear-gradient(135deg, var(--accent), #8b85ff);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-user { color: var(--muted); font-size: 14px; }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--error); color: var(--error); }
+
+  /* MAIN */
+  main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+  .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 36px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .icon {
+    width: 32px; height: 32px;
+    background: rgba(108,99,255,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  /* FORM */
+  .field { margin-bottom: 16px; }
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+  input[type="text"], select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 13px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, select:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+  select option { background: var(--surface2); }
+
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--accent), #8b85ff);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .msg { margin-top: 12px; padding: 10px 13px; border-radius: 7px; font-size: 13px; font-weight: 500; display: none; }
+  .msg.error { background: rgba(248,113,113,0.1); color: var(--error); border: 1px solid rgba(248,113,113,0.2); display: block; }
+  .msg.success { background: rgba(74,222,128,0.1); color: var(--success); border: 1px solid rgba(74,222,128,0.2); display: block; }
+
+  /* QUESTION LIST */
+  .stats-row {
+    display: flex; gap: 12px; margin-bottom: 24px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    flex: 1;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .q-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .q-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    animation: fadeIn 0.3s ease both;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .q-content { flex: 1; }
+  .q-text { font-size: 14px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+  .q-options { display: flex; flex-wrap: wrap; gap: 5px; }
+  .q-opt {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .q-opt.correct { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: var(--success); }
+
+  .btn-delete {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 7px;
+    font-size: 14px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-delete:hover { border-color: var(--error); color: var(--error); background: rgba(248,113,113,0.08); }
+
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+  .empty .e-icon { font-size: 36px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">📝 Exam<span>Portal</span> <div class="nav-badge">Admin</div></div>
+  <div class="nav-right">
+    <span class="nav-user" id="navUser">Loading...</span>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<main>
+  <div class="page-title">Admin Panel</div>
+  <p class="page-sub">Manage your question bank and monitor exam content</p>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num" id="totalQ">0</div>
+      <div class="stat-label">Total Questions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" style="color:var(--success)">✓</div>
+      <div class="stat-label">Auto Grading Active</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" style="color:var(--warn)">⏱</div>
+      <div class="stat-label">Timed Exam Mode</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- ADD QUESTION FORM -->
+    <div class="card">
+      <div class="card-title"><div class="icon">➕</div> Add New Question</div>
+
+      <div class="field">
+        <label>Question Text</label>
+        <input type="text" id="qText" placeholder="Type your question here..."/>
+      </div>
+      <div class="field">
+        <label>Answer Options</label>
+        <div class="options-grid">
+          <input type="text" id="opt0" placeholder="Option A"/>
+          <input type="text" id="opt1" placeholder="Option B"/>
+          <input type="text" id="opt2" placeholder="Option C"/>
+          <input type="text" id="opt3" placeholder="Option D"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Correct Answer</label>
+        <select id="correctAns">
+          <option value="0">Option A</option>
+          <option value="1">Option B</option>
+          <option value="2">Option C</option>
+          <option value="3">Option D</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="addQuestion()">Add Question →</button>
+      <div class="msg" id="formMsg"></div>
+    </div>
+
+    <!-- QUESTION LIST -->
+    <div class="card">
+      <div class="card-title"><div class="icon">📋</div> Question Bank</div>
+      <div id="qList"><div class="empty"><div class="e-icon">📭</div>No questions yet.</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Auth check
+  fetch('/me').then(r => r.json()).then(d => {
+    if (!d.loggedIn || d.user.role !== 'admin') return window.location.href = '/login.html';
+    document.getElementById('navUser').textContent = d.user.name;
+  });
+
+  async function loadQuestions() {
+    const res = await fetch('/admin/questions');
+    const qs = await res.json();
+    document.getElementById('totalQ').textContent = qs.length;
+    const list = document.getElementById('qList');
+    if (qs.length === 0) {
+      list.innerHTML = '<div class="empty"><div class="e-icon">📭</div>No questions yet. Add your first one!</div>';
+      return;
+    }
+    list.innerHTML = qs.map(q => `
+      <div class="q-item" id="q-${q.id}">
+        <div class="q-content">
+          <div class="q-text">${q.question}</div>
+          <div class="q-options">
+            ${q.options.map((o, i) => `<span class="q-opt ${i===q.answer?'correct':''}">${['A','B','C','D'][i]}. ${o}</span>`).join('')}
+          </div>
+        </div>
+        <button class="btn-delete" title="Delete" onclick="deleteQuestion(${q.id})">🗑</button>
+      </div>
+    `).join('');
+  }
+
+  async function addQuestion() {
+    const question = document.getElementById('qText').value.trim();
+    const options = [
+      document.getElementById('opt0').value.trim(),
+      document.getElementById('opt1').value.trim(),
+      document.getElementById('opt2').value.trim(),
+      document.getElementById('opt3').value.trim(),
+    ];
+    const answer = document.getElementById('correctAns').value;
+    const msg = document.getElementById('formMsg');
+
+    if (!question || options.some(o => !o)) {
+      return showMsg(msg, 'Please fill in the question and all 4 options.', 'error');
+    }
+    const res = await fetch('/admin/questions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, options, answer })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showMsg(msg, '✓ Question added successfully!', 'success');
+      document.getElementById('qText').value = '';
+      ['opt0','opt1','opt2','opt3'].forEach(id => document.getElementById(id).value = '');
+      loadQuestions();
+    } else {
+      showMsg(msg, data.message, 'error');
+    }
+  }
+
+  async function deleteQuestion(id) {
+    if (!confirm('Delete this question?')) return;
+    await fetch('/admin/questions/' + id, { method: 'DELETE' });
+    loadQuestions();
+  }
+
+  async function logout() {
+    await fetch('/logout', { method: 'POST' });
+    window.location.href = '/login.html';
+  }
+
+  function showMsg(el, text, type) {
+    el.textContent = text;
+    el.className = 'msg ' + type;
+    setTimeout(() => el.className = 'msg', 3000);
+  }
+
+  loadQuestions();
+</script>
+</body>
+</html>

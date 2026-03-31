@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ExamPortal — Results</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1a1a24;
+    --border: #1e1e2e;
+    --accent: #6c63ff;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --success: #4ade80;
+    --error: #f87171;
+    --warn: #fbbf24;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+  .nav-logo span { color: var(--accent); }
+  .btn-home {
+    background: linear-gradient(135deg, var(--accent), #8b85ff);
+    border: none; color: #fff;
+    padding: 9px 20px; border-radius: 8px;
+    cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+  }
+
+  main { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* SCORE HERO */
+  .score-hero {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: heroIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes heroIn { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+
+  .score-ring {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .score-ring::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    padding: 4px;
+    background: conic-gradient(var(--accent-ring) var(--pct), var(--border) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #fff calc(100% - 8px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #fff calc(100% - 8px));
+  }
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .score-label { font-size: 12px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .result-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .result-sub { color: var(--muted); font-size: 15px; }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    margin-bottom: 36px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+  }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* ANSWERS REVIEW */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .review-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .r-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border-left: 3px solid var(--border);
+    animation: fadeUp 0.4s ease both;
+  }
+  .r-card.correct { border-left-color: var(--success); }
+  .r-card.incorrect { border-left-color: var(--error); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .r-status {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    padding: 3px 10px; border-radius: 20px;
+  }
+  .r-status.c { background: rgba(74,222,128,0.1); color: var(--success); }
+  .r-status.w { background: rgba(248,113,113,0.1); color: var(--error); }
+  .r-status.s { background: rgba(107,107,128,0.1); color: var(--muted); }
+
+  .r-q { font-size: 14px; font-weight: 500; margin-bottom: 10px; line-height: 1.5; }
+  .r-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .r-opt {
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .r-opt.user-pick { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); color: var(--error); }
+  .r-opt.correct-ans { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: var(--success); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">📝 Exam<span>Portal</span></div>
+  <button class="btn-home" onclick="goHome()">← Back to Portal</button>
+</nav>
+
+<main id="main">
+  <div style="text-align:center;padding:60px;color:var(--muted)">Loading results...</div>
+</main>
+
+<script>
+  const raw = sessionStorage.getItem('examResult');
+  if (!raw) { window.location.href = '/login.html'; }
+
+  const data = JSON.parse(raw);
+  const pct = data.percentage;
+  const correct = data.score;
+  const wrong = data.results.filter(r => r.selected !== null && !r.correct).length;
+  const skipped = data.results.filter(r => r.selected === null).length;
+
+  let grade, emoji, color;
+  if (pct >= 80)      { grade = 'Excellent'; emoji = '🏆'; color = '#4ade80'; }
+  else if (pct >= 60) { grade = 'Good';      emoji = '✅'; color = '#6c63ff'; }
+  else if (pct >= 40) { grade = 'Average';   emoji = '📘'; color = '#fbbf24'; }
+  else                { grade = 'Needs Work';emoji = '📖'; color = '#f87171'; }
+
+  document.getElementById('main').innerHTML = `
+    <div class="score-hero">
+      <div class="score-ring" style="--pct:${pct*3.6}deg; --accent-ring:${color}">
+        <div class="score-num" style="color:${color}">${pct}%</div>
+        <div class="score-label">Score</div>
+      </div>
+      <div class="result-title">${emoji} ${grade}!</div>
+      <div class="result-sub">You scored ${correct} out of ${data.total} questions</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num" style="color:var(--success)">${correct}</div>
+        <div class="stat-label">Correct</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:var(--error)">${wrong}</div>
+        <div class="stat-label">Incorrect</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:var(--muted)">${skipped}</div>
+        <div class="stat-label">Skipped</div>
+      </div>
+    </div>
+
+    <div class="section-title">📋 Answer Review</div>
+    <div class="review-list">
+      ${data.results.map((r, i) => {
+        const statusClass = r.correct ? 'c' : r.selected === null ? 's' : 'w';
+        const statusText  = r.correct ? '✓ Correct' : r.selected === null ? '— Skipped' : '✗ Incorrect';
+        return `
+        <div class="r-card ${r.correct ? 'correct' : r.selected === null ? '' : 'incorrect'}" style="animation-delay:${i*0.05}s">
+          <span class="r-status ${statusClass}">${statusText}</span>
+          <div class="r-q">Q${i+1}. ${r.question}</div>
+          <div class="r-opts">
+            ${r.options.map((o, oi) => {
+              let cls = '';
+              if (oi === r.correctAnswer) cls = 'correct-ans';
+              else if (oi === r.selected && !r.correct) cls = 'user-pick';
+              return `<span class="r-opt ${cls}">${['A','B','C','D'][oi]}. ${o}</span>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  function goHome() {
+    sessionStorage.removeItem('examResult');
+    fetch('/me').then(r=>r.json()).then(d => {
+      window.location.href = d.user?.role === 'admin' ? '/admin.html' : '/exam.html';
+    });
+  }
+</script>
+</body>
+</html>

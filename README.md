@@ -18,3 +18,5 @@
 ```bash
 npm install
 node server.js
+
+OR DIRECTLY GO TO http://localhost:3000/login.html

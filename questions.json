@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "question": "What does CPU stand for?",
+    "options": [
+      "Central Processing Unit",
+      "Central Program Utility",
+      "Computer Processing Unit",
+      "Core Processing Unit"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 2,
+    "question": "Which of the following is a NoSQL database?",
+    "options": [
+      "MySQL",
+      "PostgreSQL",
+      "MongoDB",
+      "Oracle"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 3,
+    "question": "What does HTML stand for?",
+    "options": [
+      "HyperText Markup Language",
+      "High Transfer Markup Language",
+      "HyperText Management Language",
+      "HyperTool Markup Language"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 4,
+    "question": "Which HTTP method is used to send data to a server?",
+    "options": [
+      "GET",
+      "POST",
+      "DELETE",
+      "FETCH"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 5,
+    "question": "What is the primary purpose of a session in web development?",
+    "options": [
+      "Store images",
+      "Maintain user state across requests",
+      "Speed up the database",
+      "Compress HTML files"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 1774976218649,
+    "question": "what is india's capital",
+    "options": [
+      "delhi",
+      "mumbai",
+      "chennai",
+      "kolkata"
+    ],
+    "answer": 0
+  }
+]

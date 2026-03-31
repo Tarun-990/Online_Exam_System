@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "name": "Dr. Neeraj Kumar Pandey"
+  },
+  {
+    "id": 2,
+    "username": "student1",
+    "password": "pass123",
+    "role": "student",
+    "name": "Abhishek Pandey"
+  },
+  {
+    "id": 3,
+    "username": "student2",
+    "password": "pass123",
+    "role": "student",
+    "name": "Saumya Pratap Singh"
+  }
+]
